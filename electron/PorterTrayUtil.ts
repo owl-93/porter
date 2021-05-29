@@ -1,22 +1,31 @@
 import { BrowserWindow, Tray, Menu } from "electron";
+import { OS } from './App'
 import * as path  from 'path'
 
-class TrayUtil {
+export default class TrayUtil {
   mainWindow: BrowserWindow;
   tray: Tray;
+  logging: boolean = false
+  os: OS;
 
-  constructor(window: BrowserWindow) {
+  constructor(window: BrowserWindow | undefined, os?: OS) {
+    if(!window) throw new Error("main window argument is undefined/null")
     this.mainWindow = window;
+    this.os = os || "mac"
+    this.tray = this.createTray()
   }
 
   getWindowPosition = () => {
     const windowBounds = this.mainWindow.getBounds();
     const trayBounds = this.tray.getBounds();
+    this.logging && console.log(`tray bounds: `, trayBounds)
+
     const x = Math.round(
       trayBounds.x + trayBounds.width / 2 - windowBounds.width / 2
     );
     const y = Math.round(trayBounds.y + trayBounds.height);
-    return { x, y };
+    this.logging && console.log(`window position: `, {x, y})
+    return this.os === 'mac' ? { x, y } : { x: 0, y: 0};
   };
 
   showWindow = () => {
@@ -25,7 +34,7 @@ class TrayUtil {
     this.mainWindow.show();
     this.mainWindow.setVisibleOnAllWorkspaces(true);
     this.mainWindow.focus();
-    this.mainWindow.setVisibleOnAllWorkspaces(false);
+    this.mainWindow.setVisibleOnAllWorkspaces(true);
   };
 
   toggleWindow = () => {
@@ -56,5 +65,3 @@ class TrayUtil {
     return this.tray
   };
 }
-
-module.exports = TrayUtil

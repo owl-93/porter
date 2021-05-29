@@ -22,7 +22,7 @@ function getPorts(callback: (result?: PortData[], error?: any) => void, startRan
 }
 
 const extractProcesses = (stdout: string, startPort: number, endPort: number): PortData[] => {
-    const pids = []
+    const pids: string[] = []
     const name_map = new Map<string, string>()
     const port_map = new Map<string, number[]>()
 
@@ -47,7 +47,7 @@ const extractProcesses = (stdout: string, startPort: number, endPort: number): P
         const ports = port_map.get(pid)
         if(ports && ports.length > 0) {
             processes.push({
-                name: name_map.get(pid),
+                name: name_map.get(pid)!!,
                 pid,
                 ports
             })
@@ -66,4 +66,4 @@ const extractPort = (address: string): number => {
 }
 
 export { getPorts }
-export { PortData }
+export type { PortData }

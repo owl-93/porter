@@ -1,21 +1,26 @@
+import { BrowserWindow, ipcMain, app} from 'electron'
+import { getPorts, PortData } from './PorterService'
+import TrayUtil from './PorterTrayUtil'
+import * as path from 'path'
 require('dotenv').config()
 
-const { getPorts } = require('./PorterService')
-const {app, BrowserWindow, Tray, Menu, ipcMain} = require('electron')
-const path = require('path')
-const TrayUtil = require('./PorterTrayUtil')
 const dev = process.env.NODE_ENV === "development"
 const devUrl = `http://localhost:3000`
 //const appPath = path.resolve(app.getAppPath(), 'preload.js')
 
+export type OS = 'windows' | 'mac' | 'linux'
+const os = process.platform as OS
+
+console.info(`running in '${process.env.NODE_ENV}' on host ${os}`)
+
 
 //globals
-let mainWindow;
-let tray;
+let mainWindow: BrowserWindow;
+let trayUtil: TrayUtil;
 
 ipcMain.on("ports", (event, arg) => {
-  console.log("ports request");
-  getPorts((data, error) => {
+  getPorts((data: PortData[] | undefined, error: any) => {
+    console.log(`[${new Date().toISOString()}] - ${error ? "Error fetching ports" : `[${data?.length ||'no'}] ports in use`}`)
     if (error) {
       console.warn("error fetching ports", error);
     }
@@ -28,7 +33,7 @@ function createWindow () {
     width: 320,
     height: 480,
     show: false,
-    frame: false,
+    frame: os !== 'mac',
     fullscreenable: false,
     resizable: false,
     webPreferences: {
@@ -51,8 +56,8 @@ function createWindow () {
 
 app.whenReady().then(() => {
   createWindow(); //create webview
-  const trayUtil = new TrayUtil(mainWindow)
-  tray = trayUtil.createTray(); //make system tray
+  trayUtil = new TrayUtil(mainWindow)
+  trayUtil.logging = true
 })
 
 
@@ -64,49 +69,9 @@ app.on('activate', () => {
 })
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
+  if (os === 'mac') {
     app.quit()
   }
 })
 
-// const getWindowPosition = () => {
-//   const windowBounds = mainWindow.getBounds();
-//   const trayBounds = tray.getBounds();
-//   const x = Math.round(trayBounds.x + (trayBounds.width / 2) - (windowBounds.width / 2));
-//   const y = Math.round(trayBounds.y + trayBounds.height);
-//   return { x, y };
-// };
-
-// const showWindow = () => {
-//   const position = getWindowPosition();
-//   mainWindow.setPosition(position.x, position.y, false);
-//   mainWindow.show();
-//   mainWindow.setVisibleOnAllWorkspaces(true);
-//   mainWindow.focus();
-//   mainWindow.setVisibleOnAllWorkspaces(false);
-// };
-
-// const toggleWindow = () => {
-//   if (mainWindow.isVisible()) {
-//     mainWindow.hide();
-//   } else {
-//     showWindow();
-//   }
-// };
-
-// const rightClickMenu = () => {
-//   tray.popUpContextMenu(Menu.buildFromTemplate([
-//     {
-//       label: "quit porter",
-//       role: 'quit',
-//       accelerator: 'Command+Q'
-//     }
-//   ]));
-// }
-
-// const createTray = () => {
-//   tray = new Tray(path.join(__dirname, '../src/assets/IconTemplate.png'));
-//   tray.setIgnoreDoubleClickEvents(true);
-//   tray.on('click', toggleWindow);
-//   tray.on('right-click', rightClickMenu);
-// };
+export {}
