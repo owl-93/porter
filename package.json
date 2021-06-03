@@ -37,7 +37,7 @@
     "dev": "react-scripts start",
     "compile": "tsc electron/*.ts",
     "start": "tsc electron/*.ts && electron .",
-    "build": "react-scripts build",
+    "build": "yarn compile && react-scripts build",
     "run:prod": "yarn build && export NODE_ENV=production && electron .",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

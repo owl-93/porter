@@ -26,7 +26,7 @@ function createWindow() {
         width: 320,
         height: 480,
         show: false,
-        frame: os !== 'mac',
+        frame: os !== 'darwin',
         fullscreenable: false,
         resizable: false,
         webPreferences: {
@@ -56,7 +56,7 @@ electron_1.app.on('activate', function () {
     }
 });
 electron_1.app.on('window-all-closed', function () {
-    if (os === 'mac') {
+    if (os === 'darwin') {
         electron_1.app.quit();
     }
 });

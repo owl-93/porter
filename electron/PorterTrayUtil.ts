@@ -11,7 +11,7 @@ export default class TrayUtil {
   constructor(window: BrowserWindow | undefined, os?: OS) {
     if(!window) throw new Error("main window argument is undefined/null")
     this.mainWindow = window;
-    this.os = os || "mac"
+    this.os = os || "darwin"
     this.tray = this.createTray()
   }
 
@@ -25,7 +25,7 @@ export default class TrayUtil {
     );
     const y = Math.round(trayBounds.y + trayBounds.height);
     this.logging && console.log(`window position: `, {x, y})
-    return this.os === 'mac' ? { x, y } : { x: 0, y: 0};
+    return this.os === 'darwin' ? { x, y } : { x: 0, y: 0};
   };
 
   showWindow = () => {
@@ -58,7 +58,8 @@ export default class TrayUtil {
   };
 
   createTray = () => {
-    this.tray = new Tray(path.join(__dirname, "../src/assets/IconTemplate.png"));
+    const trayIcon = this.os === 'darwin' ? "IconTemplate@2x" : "IconTemplate"
+    this.tray = new Tray(path.join(__dirname, `../src/assets/${trayIcon}.png`));
     this.tray.setIgnoreDoubleClickEvents(true);
     this.tray.on("click", this.toggleWindow);
     this.tray.on("right-click", this.rightClickMenu);

@@ -8,7 +8,7 @@ const dev = process.env.NODE_ENV === "development"
 const devUrl = `http://localhost:3000`
 //const appPath = path.resolve(app.getAppPath(), 'preload.js')
 
-export type OS = 'windows' | 'mac' | 'linux'
+export type OS = 'windows' | 'darwin' | 'linux'
 const os = process.platform as OS
 
 console.info(`running in '${process.env.NODE_ENV}' on host ${os}`)
@@ -33,7 +33,7 @@ function createWindow () {
     width: 320,
     height: 480,
     show: false,
-    frame: os !== 'mac',
+    frame: os !== 'darwin',
     fullscreenable: false,
     resizable: false,
     webPreferences: {
@@ -69,7 +69,7 @@ app.on('activate', () => {
 })
 
 app.on('window-all-closed', () => {
-  if (os === 'mac') {
+  if (os === 'darwin') {
     app.quit()
   }
 })
