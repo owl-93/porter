@@ -25,3 +25,4 @@ yarn-error.log*
 
 # compiled TS
 electron/Porter*.js
+electron/App.js

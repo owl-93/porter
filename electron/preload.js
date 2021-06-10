@@ -2,7 +2,7 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 
 contextBridge.exposeInMainWorld('ipcApi', {
-  receive: (channel, callback) => {
+  subscribe: (channel, callback) => {
     ipcRenderer.on(channel, (event, args) => {
       callback?.call(null, args)
     })
@@ -10,6 +10,10 @@ contextBridge.exposeInMainWorld('ipcApi', {
 
   send: (channel) => {
     ipcRenderer.send(channel)
+  },
+
+  unsubscribe: (channel, listener) => {
+    ipcRenderer.removeListener(channel, listener)
   }
 })
 

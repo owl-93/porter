@@ -17,6 +17,8 @@ console.info(`running in '${process.env.NODE_ENV}' on host ${os}`)
 //globals
 let mainWindow: BrowserWindow;
 let trayUtil: TrayUtil;
+let interval: NodeJS.Timeout;
+let currentPortData: PortData[] | undefined;
 
 ipcMain.on("ports", (event, arg) => {
   getPorts((data: PortData[] | undefined, error: any) => {
@@ -57,7 +59,14 @@ function createWindow () {
 app.whenReady().then(() => {
   createWindow(); //create webview
   trayUtil = new TrayUtil(mainWindow)
-  trayUtil.logging = true
+  trayUtil.logging = false
+  interval = setInterval(() => {
+    getPorts((data: PortData[] | undefined, error: any) => {
+      console.log(`[${new Date().toISOString()}] - ${error ? "Error fetching ports" : `[${data?.length ||'no'}] ports in use`}`)
+      error && console.warn("error fetching ports", error); 
+        mainWindow.webContents.send("ports", { data, error });
+    });
+  }, 5000)
 })
 
 
@@ -69,6 +78,7 @@ app.on('activate', () => {
 })
 
 app.on('window-all-closed', () => {
+  clearInterval(interval)
   if (os === 'darwin') {
     app.quit()
   }

@@ -1,12 +1,12 @@
 import { exec } from 'child_process'
 
-interface PortData {
+export interface PortData {
     name: string,
     pid: string,
     ports: number[]
 }
 
-function getPorts(callback: (result?: PortData[], error?: any) => void, startRange=3000, endRange=10000) {
+export function getPorts(callback: (result?: PortData[], error?: any) => void, startRange=3000, endRange=10000) {
     exec("lsof -i -n -P", (error, stdout: string, stderr: string) => {
         if(error) {
             console.warn(error)
@@ -64,6 +64,3 @@ const extractPort = (address: string): number => {
     const port_string = chunks[1]
     return Number(port_string.split("->")[0])
 }
-
-export { getPorts }
-export type { PortData }
