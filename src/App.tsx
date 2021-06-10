@@ -47,17 +47,17 @@ function App() {
           <ScaleFade in={currentData === undefined}> <Spinner color={accentColor} size="xl"/></ScaleFade>
         </Center>
         :
-        <ScaleFade in={currentData !== undefined} >
           <List w="full" spacing={4} grow={1} overflowY="auto" py={4}>
-          {!currentData ? <ListItem>No Data</ListItem> : 
-            <>
-              {currentData.map((d: PortData, idx: number) => 
-                <PortRow key={d.pid} data={d} divider={idx !== currentData.length-1} /> 
-              )}
-            </>
-          }
+            <ScaleFade in={currentData !== undefined} >
+              {!currentData ? <ListItem>No Data</ListItem> : 
+                <>
+                  {currentData.map((d: PortData, idx: number) => 
+                    <PortRow key={d.pid} data={d} divider={idx !== currentData.length-1} /> 
+                  )}
+                </>
+              }
+            </ScaleFade>
           </List>
-        </ScaleFade>
       }
       
     </Flex>
