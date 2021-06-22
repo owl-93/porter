@@ -58,6 +58,7 @@ function createWindow () {
 
 app.whenReady().then(() => {
   createWindow(); //create webview
+  mainWindow.on('blur', mainWindow.hide)
   trayUtil = new TrayUtil(mainWindow)
   trayUtil.logging = false
   interval = setInterval(() => {

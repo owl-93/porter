@@ -32,9 +32,9 @@ export default class TrayUtil {
     const position = this.getWindowPosition();
     this.mainWindow.setPosition(position.x, position.y, false);
     this.mainWindow.show();
-    this.mainWindow.setVisibleOnAllWorkspaces(true);
     this.mainWindow.focus();
     this.mainWindow.setVisibleOnAllWorkspaces(true);
+    //this.mainWindow.on('blur', this.mainWindow.hide)
   };
 
   toggleWindow = () => {
