@@ -2,18 +2,22 @@
   "name": "porter",
   "version": "0.1.0",
   "private": true,
-  "main": "electron/App.js",
+  "author": "Stephen Schmidt",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/owl-93/porter.git"
+  },
+  "main": "public/App.js",
   "homepage": "./",
   "dependencies": {
     "@chakra-ui/icons": "^1.0.13",
     "@chakra-ui/react": "^1.6.2",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
-    "@types/electron": "^1.6.10",
     "axios": "^0.21.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
-    "electron": "^13.0.0",
+    "electron-is-dev": "^2.0.0",
     "express": "^4.17.1",
     "framer-motion": "^4",
     "react": "^17.0.2",
@@ -26,27 +30,62 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@types/electron": "^1.6.10",
     "@types/jest": "^26.0.15",
     "@types/node": "^15.6.1",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "electron-builder": "^22.10.5",
+    "electron": "^17.1.2",
+    "electron-builder": "^22.14.13",
     "electron-util": "^0.16.0"
   },
   "scripts": {
     "dev": "react-scripts start",
-    "compile": "tsc electron/*.ts",
-    "start": "export NODE_ENV=development && tsc electron/*.ts && electron .",
+    "compile": "tsc electron/* --outDir ./public --allowJs",
+    "start": "export NODE_ENV=development && yarn compile && electron .",
     "build": "yarn compile && react-scripts build",
     "run:prod": "yarn build && export NODE_ENV=production && electron .",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dist": "electron-builder",
+    "pack": "electron-builder --dir",
+    "release": "electron-builder --publish onTag",
+    "postinstall": "electron-builder install-app-deps"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
     ]
+  },
+  "build": {
+    "appId": "com.owl93.porter",
+    "productName": "Porter",
+    "files": [
+      "build/**/*"
+    ],
+    "directories": {
+      "buildResources": "build_assets"
+    },
+    "extraMetadata": {
+      "main": "build/App.js"
+    },
+    "mac": {
+      "icon": "build_assets/icon.icns",
+      "category": "public.app-category.developer-tools",
+      "publish": [
+        "github"
+      ],
+      "target": [
+        {
+          "target": "default",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [
